@@ -64,6 +64,9 @@ jobs:
             );
 
             const data = await res.json();
+            console.log("Gemini status:", res.status);
+            console.log("Gemini response:", JSON.stringify(data, null, 2));
+
             const reply = data.candidates[0].content.parts[0].text;
 
             await github.rest.issues.createComment({
