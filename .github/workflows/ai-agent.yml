@@ -83,6 +83,10 @@ When fully complete and documented, end your reply with exactly: [PROCESS_COMPLE
 
             const reply = data.candidates[0].content.parts[0].text;
 
+            if (!reply || reply.trim() === '') {
+              reply = "I'm sorry, I couldn't generate a response. Please try rephrasing your request.";
+            }
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
