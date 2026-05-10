@@ -37,8 +37,13 @@ jobs:
             });
 
             // Build Gemini conversation history
+            const systemPrompt = `You are an AI agent helping users complete a structured process via GitHub issues.
+Guide the user through self-assessment, asking one question at a time.
+When fully complete and documented, end your reply with exactly: [PROCESS_COMPLETE]
+
+`;
             const contents = [
-              { role: "user", parts: [{ text: `Issue: ${issue.title}\n\n${issue.body}` }] }
+              { role: "user", parts: [{ text: systemPrompt + `Issue: ${issue.title}\n\n${issue.body}` }] }
             ];
             for (const c of comments) {
               const isBot = c.user.login === 'github-actions[bot]';
@@ -55,11 +60,6 @@ jobs:
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  systemInstruction: {
-                    parts: [{ text: `You are an AI agent helping users complete a structured process via GitHub issues.
-            Guide the user through self-assessment, asking one question at a time.
-            When fully complete and documented, end your reply with exactly: [PROCESS_COMPLETE]` }]
-                  },
                   contents
                 })
               }
