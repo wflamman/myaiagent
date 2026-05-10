@@ -67,6 +67,18 @@ jobs:
             console.log("Gemini status:", res.status);
             console.log("Gemini response:", JSON.stringify(data, null, 2));
 
+            if (!res.ok || !data.candidates || data.candidates.length === 0) {
+              const errorMsg = `Error calling Gemini API: ${res.status} ${res.statusText}. Response: ${JSON.stringify(data)}`;
+              console.error(errorMsg);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `Sorry, there was an error processing your request: ${errorMsg}`
+              });
+              return;
+            }
+
             const reply = data.candidates[0].content.parts[0].text;
 
             await github.rest.issues.createComment({
